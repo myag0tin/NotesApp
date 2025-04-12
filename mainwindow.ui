@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="testButton">
     <property name="geometry">
      <rect>
-      <x>356</x>
-      <y>220</y>
+      <x>675</x>
+      <y>15</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -26,6 +26,21 @@
     <property name="text">
      <string>Test press</string>
     </property>
+   </widget>
+   <widget class="QTreeWidget" name="treeWidget">
+    <property name="geometry">
+     <rect>
+      <x>66</x>
+      <y>21</y>
+      <width>204</width>
+      <height>307</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string notr="true">1</string>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

@@ -15,6 +15,7 @@ public:
     bool insert_to_db();
     // todo
     int get_id() const;
+    void set_id(int id);
 
 protected:
     CDataBase * _db;

@@ -27,7 +27,7 @@ CDataBase::~CDataBase()
     }
 
     // Удаляем подключение
-    QSqlDatabase::removeDatabase(_connectionName);
+   // QSqlDatabase::removeDatabase(_connectionName);
 }
 
 bool CDataBase::is_open() const
