@@ -6,6 +6,9 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QDateTime>
+#include "cnote.h"
+#include "cfolder.h"
+#include "cdatabase.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,63 +31,41 @@ void MainWindow::foo()
 void MainWindow::on_testButton_clicked()
 {
     QString path = "D:/__Programming/__DB/notes.db";
+    CDataBase * db = new CDataBase(path);
 
-    // 1. Открываем базу данных
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(path);
+    //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    //db.setDatabaseName(path);
 
-    if (!db.open()) {
-        qDebug() << "Ошибка подключения к БД:" << db.lastError().text();
-        return;
-    }
+    //if (!db.open()) {
+    //    qDebug() << "Ошибка подключения к БД:" << db.lastError().text();
+     //   return;
+    //}
 
     qDebug() << "База данных успешно открыта.";
 
-    QSqlQuery query;
-
-    // Получаем текущее время как timestamp (int) и как текст (QString)
-    qint64 timestamp = QDateTime::currentSecsSinceEpoch();
-    QString createdAtStr = QDateTime::currentDateTime().toString(Qt::ISODate);
-
     // ===== Добавление записи в Note =====
-    QString noteTitle = "Новая заметка";
-    QString noteContent = "Содержимое новой заметки";
-    int parentNoteId = 0; // или другой ID, если есть иерархия
-
-    query.prepare(R"(
-        INSERT INTO Note (title, content, created_at, parent_id)
-        VALUES (:title, :content, :created_at, :parent_id)
-    )");
-    query.bindValue(":title", noteTitle);
-    query.bindValue(":content", noteContent);
-    query.bindValue(":created_at", timestamp); // int
-    query.bindValue(":parent_id", parentNoteId);
-
-    if (!query.exec()) {
-        qDebug() << "Ошибка вставки в Note:" << query.lastError().text();
-    } else {
-        qDebug() << "Запись в Note успешно добавлена.";
+    CNote * myNote = new CNote(db);
+    myNote->set_title("Новая заметка - класс");
+    myNote->set_content("Содержимое новой заметки - класс");
+    if (!myNote->insert_to_db()) {
+        qDebug() << "Не удалось добавить заметку.";
     }
+    delete myNote;
 
-    // ===== Добавление записи в Folder =====
-    QString folderTitle = "Новая папка";
-    int parentFolderId = 0;
+    // ===== Добавление записи в Folder через CFolder =====
+    CFolder * folder = new CFolder(db);
+    folder->set_title("Новая папка - класс");
+    folder->set_parent(nullptr);
 
-    query.prepare(R"(
-        INSERT INTO Folder (title, created_at, parent_id)
-        VALUES (:title, :created_at, :parent_id)
-    )");
-    query.bindValue(":title", folderTitle);
-    query.bindValue(":created_at", timestamp); // unix время в виде int
-    query.bindValue(":parent_id", parentFolderId);
-
-    if (!query.exec()) {
-        qDebug() << "Ошибка вставки в Folder:" << query.lastError().text();
+    if (!folder->insert_to_db()) {
+        qDebug() << "Не удалось добавить папку.";
     } else {
-        qDebug() << "Запись в Folder успешно добавлена.";
+        qDebug() << "Папка успешно добавлена с ID:" << folder->get_id();
     }
+    delete folder;
 
     // Закрываем БД
-    db.close();
-    qDebug() << "База данных закрыта.";
+    //db.close();
+    //qDebug() << "База данных закрыта.";
 }
+
