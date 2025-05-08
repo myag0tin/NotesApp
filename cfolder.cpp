@@ -1,10 +1,42 @@
 #include "cfolder.h"
+#include "cdatabase.h"
 #include <QDateTime>
 #include <QSqlQuery>
-#include <QVariant>
 
-CFolder::CFolder(CDataBase * db) : _db(db), _parent(nullptr), _id(-1)
+#include<iostream>
+
+CFolder::CFolder() : _id(-1), _parent_id(0), _created_at(0), _deleted_id(0)
 {
+}
+
+CFolder::CFolder(QSqlQuery & query)
+{
+    set_id(query.value("id").toInt());
+    set_title(query.value("title").toString());
+    set_created_at(query.value("created_at").toInt());
+    set_parent_id(query.value("parent_id").toInt());
+    set_deleted_id(query.value("deleted_id").toInt());
+}
+
+void CFolder::set_deleted_id(int deleted_id)
+{
+    _deleted_id = deleted_id;
+}
+
+void CFolder::set_parent_id(int parent_id)
+{
+    _parent_id = parent_id;
+}
+
+
+int CFolder::get_parent_id()
+{
+    return _parent_id;
+}
+
+void CFolder::set_created_at(int created_at)
+{
+    _created_at = created_at;
 }
 
 void CFolder::set_title(QString title)
@@ -12,32 +44,26 @@ void CFolder::set_title(QString title)
     _title = title;
 }
 
-void CFolder::set_parent(CFolder * parent)
+
+void CFolder::set_id(int id)
 {
-    _parent = parent;
+    _id = id;
 }
+
+QString CFolder::get_title() const
+{
+    return _title;
+}
+
+
 
 bool CFolder::insert_to_db()
 {
-    QSqlQuery query(*_db->get_db());
-    query.prepare(R"(
-        INSERT INTO Folder (title, created_at, parent_id)
-        VALUES (:title, :created_at, :parent_id)
-    )");
-
-    query.bindValue(":title", _title);
-    query.bindValue(":created_at", QDateTime::currentSecsSinceEpoch());
-    query.bindValue(":parent_id", (_parent != nullptr)? _parent->get_id(): QVariant(QVariant::Int));
-
-    if (!query.exec()) {
-        return false;
-    }
-
-    _id = query.lastInsertId().toInt();
     return true;
+    //return _db->insert(this);
 }
 
 int CFolder::get_id() const
 {
-    return _id;
+    return this->_id;
 }

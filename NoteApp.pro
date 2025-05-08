@@ -12,16 +12,23 @@ SOURCES += \
     cdatabase.cpp \
     cfolder.cpp \
     cnote.cpp \
+    csearchdialog.cpp \
+    ctreeitem.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    settingsdialog.cpp
 
 HEADERS += \
     cdatabase.h \
     cfolder.h \
     cnote.h \
-    mainwindow.h
+    csearchdialog.h \
+    ctreeitem.h \
+    mainwindow.h \
+    settingsdialog.h
 
 FORMS += \
+    csearchdialog.ui \
     mainwindow.ui
 
 win32:RC_FILE = file.rc

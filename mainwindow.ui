@@ -6,35 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1017</width>
+    <height>685</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="testButton">
+   <widget class="QTreeWidget" name="structureWidget">
     <property name="geometry">
      <rect>
-      <x>675</x>
-      <y>15</y>
-      <width>80</width>
-      <height>21</height>
+      <x>0</x>
+      <y>0</y>
+      <width>244</width>
+      <height>643</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Test press</string>
-    </property>
-   </widget>
-   <widget class="QTreeWidget" name="treeWidget">
-    <property name="geometry">
-     <rect>
-      <x>66</x>
-      <y>21</y>
-      <width>204</width>
-      <height>307</height>
-     </rect>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <column>
      <property name="text">
@@ -42,18 +32,67 @@
      </property>
     </column>
    </widget>
+   <widget class="QPlainTextEdit" name="noteDescription">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>244</x>
+      <y>0</y>
+      <width>772</width>
+      <height>643</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1017</width>
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionCreateNote"/>
+    <addaction name="actionCreateFolder"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionToggleUiMode"/>
+    <addaction name="actionHelp"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionCreateNote">
+   <property name="text">
+    <string>Create Note</string>
+   </property>
+  </action>
+  <action name="actionCreateFolder">
+   <property name="text">
+    <string>Create Folder</string>
+   </property>
+  </action>
+  <action name="actionToggleUiMode">
+   <property name="text">
+    <string>Toggle Mode</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
