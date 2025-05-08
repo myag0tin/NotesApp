@@ -11,7 +11,7 @@
 
 CDataBase::CDataBase(const QString& path)
 {
-    // Создаём уникальное имя подключения
+
     _connectionName = "notes_connection";
 
     if (QSqlDatabase::contains(_connectionName)) {
@@ -33,8 +33,6 @@ CDataBase::~CDataBase()
         qDebug() << "База данных закрыта.";
     }
 
-    // Удаляем подключение
-    // QSqlDatabase::removeDatabase(_connectionName);
 }
 
 bool CDataBase::is_open() const
@@ -60,7 +58,7 @@ bool CDataBase::update(CNote *note)
     query.bindValue(":title", note->get_title());
     query.bindValue(":content", note->get_content());
     query.bindValue(":parent_id", note->get_parent_id());
-    query.bindValue(":id", note->get_id()); // Specify the note's ID to update the correct record
+    query.bindValue(":id", note->get_id());
 
     if (!query.exec()) {
         qDebug() << "Ошибка обновления заметки:" << query.lastError().text();
@@ -111,7 +109,7 @@ bool CDataBase::insert(CNote * note)
     query.bindValue(":title", note->get_title());
     query.bindValue(":content", note->get_content());
     query.bindValue(":created_at", QDateTime::currentSecsSinceEpoch());
-    //query.bindValue(":parent_id", (note->get_parent() != nullptr) ? note->get_parent()->get_id() : QVariant(QVariant::Int));
+
     query.bindValue(":parent_id", note->get_parent_id());
     query.bindValue(":deleted_id", 0);
 
@@ -120,7 +118,7 @@ bool CDataBase::insert(CNote * note)
         return false;
     }
 
-    // Update note's ID with the last inserted ID
+
     note->set_id(query.lastInsertId().toInt());
     return true;
 }
@@ -147,7 +145,7 @@ bool CDataBase::insert(CFolder * folder)
         return false;
     }
 
-    // Update folder's ID with the last inserted ID
+
     folder->set_id(query.lastInsertId().toInt());
     return true;
 }
@@ -176,7 +174,7 @@ bool CDataBase::removeFolder(int folderId)
         return false;
     }
 
-    // Рекурсивно удаляем все заметки в папке
+
     QSqlQuery noteQuery(_db);
     noteQuery.prepare("SELECT id FROM Note WHERE parent_id = :folderId");
     noteQuery.bindValue(":folderId", folderId);
@@ -192,7 +190,7 @@ bool CDataBase::removeFolder(int folderId)
         }
     }
 
-    // Рекурсивно удаляем все подпапки
+
     QSqlQuery folderQuery(_db);
     folderQuery.prepare("SELECT id FROM Folder WHERE parent_id = :folderId");
     folderQuery.bindValue(":folderId", folderId);
@@ -208,7 +206,7 @@ bool CDataBase::removeFolder(int folderId)
         }
     }
 
-    // Удаляем саму папку
+
     QSqlQuery deleteQuery(_db);
     deleteQuery.prepare("DELETE FROM Folder WHERE id = :id");
     deleteQuery.bindValue(":id", folderId);
@@ -228,7 +226,7 @@ int CDataBase::countItemsInFolder(int folderId)
 
     int count = 0;
 
-    // Подсчет заметок
+
     QSqlQuery noteQuery(_db);
     noteQuery.prepare("SELECT COUNT(*) FROM Note WHERE parent_id = :folderId");
     noteQuery.bindValue(":folderId", folderId);
@@ -238,7 +236,7 @@ int CDataBase::countItemsInFolder(int folderId)
         qDebug() << "Ошибка подсчета заметок:" << noteQuery.lastError().text();
     }
 
-    // Подсчет подпапок
+
     QSqlQuery folderQuery(_db);
     folderQuery.prepare("SELECT id FROM Folder WHERE parent_id = :folderId");
     folderQuery.bindValue(":folderId", folderId);
@@ -248,9 +246,9 @@ int CDataBase::countItemsInFolder(int folderId)
     }
 
     while (folderQuery.next()) {
-        count++; // Учитываем саму подпапку
+        count++;
         int subFolderId = folderQuery.value("id").toInt();
-        count += countItemsInFolder(subFolderId); // Рекурсивно подсчитываем содержимое подпапки
+        count += countItemsInFolder(subFolderId);
     }
 
     return count;
@@ -299,7 +297,7 @@ std::map<int,QString> CDataBase::findNotes(QString & pattern)
 {
     std::map<int, QString> result;
 
-    // Prepare the SQL query, using LIKE for pattern matching
+
     QSqlQuery query(_db);
     QString sql = "SELECT id, title FROM note WHERE content LIKE ?";
 
@@ -308,11 +306,11 @@ std::map<int,QString> CDataBase::findNotes(QString & pattern)
            return result;
      }
 
-     // Add wildcards to the pattern
+
      QString likePattern = "%" + pattern + "%";
      query.addBindValue(likePattern);
 
-     // Execute and fetch results
+
      if (!query.exec()) {
            qDebug() << "Query execution failed:" << query.lastError();
            return result;

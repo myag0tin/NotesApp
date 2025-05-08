@@ -22,7 +22,6 @@
 #include <QToolButton>
 #include <QAction>
 #include "csearchdialog.h"
-
 #include <QLabel>
 #include <QTextBrowser>
 
@@ -48,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->structureWidget, &QTreeWidget::currentItemChanged, this, &MainWindow::onTreeWidgetItemChanged);
     connect(_saveTimeout, &QTimer::timeout, this, &MainWindow::onNoteContentChanged);
 
-    //ui->menuSearch->addAction(ui->actionSearch);
+
     QAction *searchAction = new QAction("Search", this);
     menuBar()->addAction(searchAction);
     connect(searchAction, &QAction::triggered, this, &MainWindow::on_actionSearch_triggered);
@@ -184,21 +183,6 @@ void MainWindow::showContextMenu(const QPoint &pos)
         QAction *actionMoveToFolder = new QAction("Move to Folder", &contextMenu);
         QAction *actionDelete = new QAction("Delete", &contextMenu);
 
-        /*connect(actionRename, &QAction::triggered, this, [this, item, note]() {
-            bool ok;
-            QString newTitle = QInputDialog::getText(this, tr("Rename a Note"),
-                                                    tr("Enter a new Note name:"), QLineEdit::Normal,
-                                                    note->get_title(), &ok);
-            if (ok && !newTitle.isEmpty()) {
-                note->set_title(newTitle);
-                if (_db->update(note)) {
-                    item->setText(0, newTitle);
-                    qDebug() << "Заметка переименована:" << newTitle;
-                } else {
-                    QMessageBox::warning(this, tr("Ошибка"), tr("Не удалось переименовать заметку."));
-                }
-            }
-        });*/
         connect(actionRename, &QAction::triggered, this, [this, item, note]() {
                     QDialog dialog(this);
                     dialog.setWindowTitle(tr("Rename a Note"));
@@ -331,22 +315,6 @@ void MainWindow::showContextMenu(const QPoint &pos)
         QAction *actionMoveToFolder = new QAction("Move to Folder", &contextMenu);
         QAction *actionDelete = new QAction("Delete", &contextMenu);
 
-        /*connect(actionRename, &QAction::triggered, this, [this, item, folder]() {
-            bool ok;
-            QString newTitle = QInputDialog::getText(this, tr("Rename a Folder"),
-                                                    tr("Enter a new Folder name:"), QLineEdit::Normal,
-                                                    folder->get_title(), &ok);
-            if (ok && !newTitle.isEmpty()) {
-                folder->set_title(newTitle);
-                if (_db->update(folder)) {
-                    item->setText(0, newTitle);
-                    qDebug() << "Папка переименована:" << newTitle;
-                } else {
-                    QMessageBox::warning(this, tr("Ошибка"), tr("Не удалось переименовать папку."));
-                }
-            }
-        });*/
-
         connect(actionRename, &QAction::triggered, this, [this, item, folder]() {
                     QDialog dialog(this);
                     dialog.setWindowTitle(tr("Rename a Folder"));
@@ -380,33 +348,6 @@ void MainWindow::showContextMenu(const QPoint &pos)
                     }
                 });
 
-        /*connect(actionAddNote, &QAction::triggered, this, [this, folder]() {
-            qDebug() << "Добавить заметку в папку:" << folder->get_title();
-        });*/
-
-        /*connect(actionAddNote, &QAction::triggered, this, [this, item, folder]() {
-                    bool ok;
-                    QString title = QInputDialog::getText(this, tr("Create a Note"),
-                                                         tr("Note name:"), QLineEdit::Normal,
-                                                         "", &ok);
-                    if (ok && !title.isEmpty()) {
-                        CNote *note = new CNote();
-                        note->set_title(title);
-                        note->set_content("");
-                        note->set_parent_id(folder->get_id());
-                        if (_db->insert(note)) {
-                            QTreeWidgetItem *noteItem = new QTreeWidgetItem();
-                            noteItem->setData(0, Qt::UserRole, QVariant::fromValue(note));
-                            noteItem->setText(0, note->get_title());
-                            noteItem->setIcon(0, style()->standardIcon(QStyle::SP_FileIcon));
-                            item->addChild(noteItem);
-                            qDebug() << "Note created in folder ID:" << folder->get_id() << " Title:" << note->get_title();
-                        } else {
-                            delete note;
-                            QMessageBox::warning(this, tr("Error"), tr("Failed to create Note"));
-                        }
-                    }
-                });*/
         connect(actionAddNote, &QAction::triggered, this, [this, item, folder]() {
                     QDialog dialog(this);
                     dialog.setWindowTitle(tr("Create a Note"));
@@ -510,50 +451,18 @@ void MainWindow::showContextMenu(const QPoint &pos)
             }
         });
 
-        /*connect(actionDelete, &QAction::triggered, this, [this, item, folder]() {
-            int itemCount = _db->countItemsInFolder(folder->get_id());
-            if (itemCount > 0) {
-                QString message = tr("This will delete the folder and %1 item(s) inside it. Continue?").arg(itemCount);
-                QMessageBox::StandardButton reply = QMessageBox::question(
-                    this, tr("Delete Confirmation"), message,
-                    QMessageBox::Ok | QMessageBox::Cancel);
-                if (reply != QMessageBox::Ok) {
-                    return;
-                }
-            }
-            if (_db->removeFolder(folder->get_id())) {
-                if (item->parent()) {
-                    item->parent()->removeChild(item);
-                } else {
-                    int index = ui->structureWidget->indexOfTopLevelItem(item);
-                    ui->structureWidget->takeTopLevelItem(index);
-                }
-                delete item;
-                qDebug() << "Папка удалена:" << folder->get_title();
-            } else {
-                QMessageBox::warning(this, tr("Ошибка"), tr("Не удалось удалить папку."));
-            }
-        });*/
-
-
         connect(actionDelete, &QAction::triggered, this, [this, item, folder]() {
             int itemCount = _db->countItemsInFolder(folder->get_id());
             if (itemCount > 0) {
                 QString message = tr("This will delete the folder and %1 item(s) inside it. Continue?").arg(itemCount);
 
-                // Создаём QMessageBox вручную
                 QMessageBox msgBox(this);
                 msgBox.setWindowTitle(tr("Delete Confirmation"));
                 msgBox.setText(message);
                 msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
                 msgBox.setDefaultButton(QMessageBox::Cancel);
-
-                // УСТАНОВКА ИКОНКИ ОКНА (левый верхний угол)
-                msgBox.setWindowIcon(QIcon("D:/__Programming/Icons/alert.ico")); // или ":/icons/myicon.png"
-                msgBox.setIcon(QMessageBox::Question);  // ВАЖНО!
-
-                // (опционально) кастомная иконка внутри окна
-                // msgBox.setIconPixmap(QPixmap("C:/path/to/inner_icon.png"));
+                msgBox.setWindowIcon(QIcon("D:/__Programming/Icons/alert.ico"));
+                msgBox.setIcon(QMessageBox::Question);
 
                 if (msgBox.exec() != QMessageBox::Ok) {
                     return;
@@ -612,7 +521,7 @@ void MainWindow::on_actionCreateNote_triggered() {
         CNote *note = new CNote();
         note->set_title(title);
         note->set_content("");
-        note->set_parent_id(0); // Без родителя
+        note->set_parent_id(0);
         if (_db->insert(note)) {
             QTreeWidgetItem *noteItem = new QTreeWidgetItem();
             noteItem->setData(0, Qt::UserRole, QVariant::fromValue(note));
@@ -635,9 +544,9 @@ void MainWindow::on_actionCreateFolder_triggered()
                                          tr("Folder name:"), QLineEdit::Normal,
                                          "", &ok);
     if (ok && !title.isEmpty()) {
-        CFolder *folder = new CFolder(); // Используем конструктор по умолчанию
+        CFolder *folder = new CFolder();
         folder->set_title(title);
-        folder->set_parent_id(0); // Без родителя
+        folder->set_parent_id(0);
         folder->set_created_at(QDateTime::currentSecsSinceEpoch());
         folder->set_deleted_id(0);
         if (_db->insert(folder)) {
@@ -673,7 +582,6 @@ void MainWindow::on_actionSearch_triggered()
 void MainWindow::on_noteSelected(int noteId)
 {
     qDebug() << "Received noteSelected with noteId:" << noteId;
-    // Ищем элемент заметки в дереве
     QTreeWidgetItem *noteItem = nullptr;
     for (int i = 0; i < _structureWidget->topLevelItemCount(); ++i) {
         QTreeWidgetItem *topItem = _structureWidget->topLevelItem(i);
@@ -683,7 +591,6 @@ void MainWindow::on_noteSelected(int noteId)
 
     if (noteItem) {
         qDebug() << "Found note item with title:" << noteItem->text(0);
-        // Выбираем элемент и вызываем обработчик клика
         _structureWidget->setCurrentItem(noteItem);
         onTreeItemClicked(noteItem, 0);
     } else {
@@ -715,8 +622,7 @@ void MainWindow::on_actionHelp_triggered()
     QMessageBox msgBox(this);
     msgBox.setWindowTitle("Help");
 
-    //msgBox.setText("q&a text here"); // -- Первый начальный вариант
-    msgBox.setText( // -- Второй вариант БЛЛОК
+    msgBox.setText(
             "<h1>NotesApp</h1>"
             "<p>Welcome to <b>NotesApp</b>! This application is designed to help you create and organize your notes.</p>"
             "<h2>Main Features:</h2>"

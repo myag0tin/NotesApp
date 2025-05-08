@@ -16,7 +16,7 @@ public:
     ~CDataBase();
 
     bool is_open() const;
-    //QSqlDatabase* get_db();
+
     bool update(CNote *note);
     bool insert(CNote * note);
     bool insert(CFolder * folder);

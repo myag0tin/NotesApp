@@ -12,7 +12,7 @@ CNote::CNote(QSqlQuery & query)
 {
     set_id(query.value("id").toInt());
     set_title(query.value("title").toString());
-    //TODO: complete all intiizalization
+
     set_content(query.value("content").toString());
     set_created_at(query.value("created_at").toInt());
     set_parent_id(query.value("parent_id").toInt());
@@ -72,7 +72,7 @@ CFolder* CNote::get_parent() const
 bool CNote::insert_to_db()
 {
     return true;
-    //return _db->insert(this);
+
 }
 
 int CNote::get_id() const

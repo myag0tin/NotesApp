@@ -34,6 +34,6 @@ protected:
     int _deleted_id;
 };
 
-Q_DECLARE_METATYPE(CFolder*) // Добавляем регистрацию
+Q_DECLARE_METATYPE(CFolder*)
 
 #endif // CFOLDER_H

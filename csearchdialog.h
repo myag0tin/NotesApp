@@ -18,12 +18,12 @@ public:
     explicit CSearchDialog(CDataBase * db, QWidget *parent = nullptr);
     ~CSearchDialog();
 
-signals:    //first
-    void noteSelected(int noteId); //first-2
+signals:
+    void noteSelected(int noteId);
 
 private slots:
     void on_btnSearch_clicked();
-    void on_listItems_doubleClicked(QListWidgetItem *item); //second
+    void on_listItems_doubleClicked(QListWidgetItem *item);
 
 private:
     Ui::CSearchDialog *ui;

@@ -35,24 +35,24 @@ void CSearchDialog::on_btnSearch_clicked()
 
 void CSearchDialog::fillItemList(std::map<int, QString> items)
 {
-    // Очищаем старые результаты
+
     ui->listItems->clear();
 
     if (items.empty()) {
-        // Если результатов нет, показываем заглушку
+
         QListWidgetItem *placeholderItem = new QListWidgetItem(tr("Matching notes will appear here..."));
         placeholderItem->setTextAlignment(Qt::AlignCenter);
         placeholderItem->setForeground(QBrush(Qt::gray));
-        placeholderItem->setFlags(Qt::NoItemFlags); // Неинтерактивная заглушка
+        placeholderItem->setFlags(Qt::NoItemFlags);
         ui->listItems->addItem(placeholderItem);
     } else {
-        // Заполняем список результатами поиска
+
         for (const auto &pair : items) {
             QString itemText = QString("%1").arg(pair.second);
             QListWidgetItem *item = new QListWidgetItem(itemText);
             item->setIcon(style()->standardIcon(QStyle::SP_FileIcon));
-            item->setData(Qt::UserRole, pair.first); // Сохраняем ID заметки
-            item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled); // Убедимся, что элемент интерактивен
+            item->setData(Qt::UserRole, pair.first);
+            item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             ui->listItems->addItem(item);
             qDebug() << "Added item: ID =" << pair.first << ", Title =" << itemText;
         }
@@ -61,7 +61,7 @@ void CSearchDialog::fillItemList(std::map<int, QString> items)
 
 void CSearchDialog::addPlaceholderIfEmpty()
 {
-    // Если список пуст, добавляем заглушку
+
     if (ui->listItems->count() == 0) {
         QListWidgetItem *placeholderItem = new QListWidgetItem(tr("Matching notes will appear here..."));
         placeholderItem->setTextAlignment(Qt::AlignCenter);
@@ -74,12 +74,12 @@ void CSearchDialog::addPlaceholderIfEmpty()
 void CSearchDialog::on_listItems_doubleClicked(QListWidgetItem *item)
 {
     qDebug() << "Double-click detected on item:" << (item ? item->text() : "null");
-    // Проверяем, валиден ли элемент и есть ли ID
+
     if (item && item->data(Qt::UserRole).isValid()) {
         int noteId = item->data(Qt::UserRole).toInt();
         qDebug() << "Emitting noteSelected with noteId:" << noteId;
-        emit noteSelected(noteId); // Эмитируем сигнал с ID заметки
-        accept(); // Закрываем диалог
+        emit noteSelected(noteId);
+        accept();
     } else {
         qDebug() << "Invalid item or no note ID";
     }

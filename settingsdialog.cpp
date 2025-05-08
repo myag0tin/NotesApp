@@ -10,7 +10,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent)
 {
     setWindowTitle("Toggle Mode");
-    setModal(true); // Окно будет блокировать родителя
+    setModal(true);
     setFixedSize(290,70);
 
     setWindowIcon(QIcon("D:/__Programming/__NotesApp/NoteApp/settings_ico.png"));
@@ -23,10 +23,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     switchModeButton = new QPushButton("Switch to Dark Mode", this);
     connect(switchModeButton, &QPushButton::clicked, this, &SettingsDialog::on_switchModeButton_clicked);
     layout->addWidget(switchModeButton);
-
-    /*QPushButton *closeButton = new QPushButton("Cancel", this);
-    layout->addWidget(closeButton);
-    connect(closeButton, &QPushButton::clicked, this, &SettingsDialog::close);*/
 
     setLayout(layout);
 
@@ -43,7 +39,6 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::applyTheme(bool darkMode)
 {
     if (darkMode) {
-        // Dark theme
         qApp->setStyleSheet(R"(
             QWidget {
                 background-color: #333333;
@@ -67,7 +62,6 @@ void SettingsDialog::applyTheme(bool darkMode)
         )");
         switchModeButton->setText("Switch to Light Mode");
     } else {
-        // Light theme
         qApp->setStyleSheet("");
         switchModeButton->setText("Switch to Dark Mode");
     }
@@ -78,7 +72,6 @@ void SettingsDialog::on_switchModeButton_clicked()
     darkModeEnabled = !darkModeEnabled;
     applyTheme(darkModeEnabled);
 
-    // Save theme state
     QSettings settings("NotesApp", "ThemeSettings");
     settings.setValue("darkMode", darkModeEnabled);
 }

@@ -60,7 +60,7 @@ QString CFolder::get_title() const
 bool CFolder::insert_to_db()
 {
     return true;
-    //return _db->insert(this);
+
 }
 
 int CFolder::get_id() const

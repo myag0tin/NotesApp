@@ -5,7 +5,6 @@
 #include <QSqlDatabase>
 #include <QString>
 #include "cfolder.h"
-//#include "cdatabase.h"
 #include "ctreeitem.h"
 
 
@@ -32,7 +31,7 @@ public:
     int get_parent_id() const;
 
 protected:
-     //CDataBase * _db;
+
      QString _content;
      QString _title;
      CFolder * _parent;
